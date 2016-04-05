@@ -1,4 +1,5 @@
 /*from Visualizing Data by Ben Fry*/
+//Comments from Shawn and Tyler
 
 FloatTable data;
 float dataMin, dataMax;
@@ -21,7 +22,7 @@ int volumeIntervalMinor = 5;
 float[] tabLeft, tabRight;
 float tabTop, tabBottom;
 float tabPad = 10;
-
+// Array list
 Integrator[] interpolators;
 
 PFont plotFont;
@@ -31,28 +32,28 @@ void setup() {
   data = new FloatTable("milk-tea-coffee.tsv");
   rowCount = data.getRowCount();
   columnCount = data.getColumnCount();
-
+// get data of years from rows
   years = int(data.getRowNames());
   yearMin = years[0];
   yearMax = years[years.length-1];
 
   dataMin = 0;
   dataMax = ceil(data.getTableMax() / volumeInterval) * volumeInterval;
-
+// ?
   interpolators = new Integrator[rowCount];
   for (int row = 0; row<rowCount; row++) {
     float initialValue = data.getFloat(row, 0);
     interpolators[row] = new Integrator(initialValue);
     interpolators[row].attraction = .1;
   }
-
+//plotting out the size of the graph
   plotX1 = 120;
   plotX2 = width-80;
   labelX = 50;
   plotY1 = 60;
   plotY2 = height - 70;
   labelY = height-25;
-
+// Determine the font of the plot and the type
   plotFont = createFont("SansSerif", 20);
   textFont(plotFont);
 
@@ -66,23 +67,24 @@ void draw() {
   rectMode(CORNERS);
   noStroke();
   rect(plotX1, plotY1, plotX2, plotY2);
-
+//Use functions created below (void drawTitleTabs())
   drawTitleTabs();
   drawAxisLabels();
-
+// for the integer/number of rows, countinously add rows depending on the total count of rows.
   for (int row = 0; row<rowCount; row++) {
     interpolators[row].update();
   }
 
   drawYearLabels();
   drawVolumeLabels();
-
+// Fill in the lower side of the line with blue
   noStroke();
   fill(#5679C1);
   drawDataArea(currentColumn);
 }
 
 void drawTitleTabs() {
+  // Draw the shape of the title tabs and label them
   rectMode(CORNERS);
   noStroke();
   textSize(20);
@@ -96,7 +98,7 @@ void drawTitleTabs() {
   float runningX = plotX1;
   tabTop = plotY1 - textAscent() - 15;
   tabBottom = plotY1;
-
+// Keep adding columns until it reaches the maximum count of columns
   for (int col = 0; col<columnCount; col++) {
     String title = data.getColumnName(col);
     tabLeft[col] = runningX;
@@ -112,7 +114,7 @@ void drawTitleTabs() {
     runningX = tabRight[col];
   }
 }
-
+// Clicking on the mouse while it is in the area of the tab will do something
 void mousePressed() {
   if (mouseY>tabTop && mouseY<tabBottom) {
     for (int col = 0; col<columnCount; col++) {
@@ -166,7 +168,7 @@ void drawVolumeLabels() {
 
   stroke(128);
   strokeWeight(1);
-
+//when the dataMin represented by v is less than the dataMax, add volume according to new values when switching tabs
   for (float v = dataMin; v<dataMax; v+= volumeIntervalMinor) {
     if (v%volumeIntervalMinor ==0) {
       float y = map(v, dataMin, dataMax, plotY2, plotY1);
@@ -185,8 +187,10 @@ void drawVolumeLabels() {
     }
   }
 }
+// Draw the area for measuring the values
 void drawDataArea(int col) {
   beginShape();
+  //Add rows to the data area depending on the total count of rows in the data
   for (int row=0; row<rowCount; row++) {
     if (data.isValid(row, col)) {
       float value = interpolators[row].value;
