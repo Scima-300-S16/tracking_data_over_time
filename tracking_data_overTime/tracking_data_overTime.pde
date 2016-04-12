@@ -1,4 +1,7 @@
-/*from Visualizing Data by Ben Fry*/
+/*from Visualizing 
+Data by Ben Fry*/
+
+//
 
 FloatTable data;
 float dataMin, dataMax;
@@ -60,9 +63,9 @@ void setup() {
 }
 
 void draw() {
-  background(224);
+  background();
   //show the plot area as white box
-  fill(255);
+  fill(100);
   rectMode(CORNERS);
   noStroke();
   rect(plotX1, plotY1, plotX2, plotY2);
