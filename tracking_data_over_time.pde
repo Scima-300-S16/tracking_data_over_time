@@ -11,10 +11,10 @@ int rowCount;
 int columnCount;
 int currentColumn = 0;
 
-int yearMin, yearMax;
-int[] years;
+int hourMin, hourMax;
+int[] hours;
 
-int yearInterval = 10;
+int hourInterval = 10;
 int volumeInterval = 10;
 int volumeIntervalMinor = 5;
 
@@ -32,9 +32,9 @@ void setup() {
   rowCount = data.getRowCount();
   columnCount = data.getColumnCount();
 
-  years = int(data.getRowNames());
-  yearMin = years[0];
-  yearMax = years[years.length-1];
+  hours = int(data.getRowNames());
+  hourMin = 0;
+  hourMax = 24;
 
   dataMin = 0;
   dataMax = ceil(data.getTableMax() / volumeInterval) * volumeInterval;
@@ -74,7 +74,7 @@ void draw() {
     interpolators[row].update();
   }
 
-  drawYearLabels();
+  drawHourLabels();
   drawVolumeLabels();
 
   noStroke();
@@ -141,7 +141,7 @@ void drawAxisLabels() {
   text("Time", (plotX1+plotX2)/2, labelY);
 }
 
-void drawYearLabels() {
+void drawHourLabels() {
   fill(0);
   textSize(10);
   textAlign(CENTER);
@@ -151,11 +151,13 @@ void drawYearLabels() {
   strokeWeight(1);
 
   for (int row = 0; row<rowCount; row++) {
-    if (years[row]% yearInterval ==0) {
-      float x = map(years[row], yearMin, yearMax, plotX1, plotX2);
-      text(years[row],x, plotY2+textAscent()+10);
+    //if (hours[row]% hourInterval ==0) {
+      float x = map(hours[row], hourMin, hourMax, plotX1, plotX2);
+      text(hours[row],x, plotY2+textAscent()+10);
       line(x, plotY1, x, plotY2);
-    }
+      
+
+    //}
   }
 }
 
@@ -170,6 +172,8 @@ void drawVolumeLabels() {
   for (float v = dataMin; v<dataMax; v+= volumeIntervalMinor) {
     if (v%volumeIntervalMinor ==0) {
       float y = map(v, dataMin, dataMax, plotY2, plotY1);
+
+      
       if (v%volumeInterval == 0) {
         float textOffset = textAscent()/2;
         if (v == dataMin) {
@@ -190,8 +194,12 @@ void drawDataArea(int col) {
   for (int row=0; row<rowCount; row++) {
     if (data.isValid(row, col)) {
       float value = interpolators[row].value;
-      float x = map(years[row], yearMin, yearMax, plotX1, plotX2);
-      float y = map(value, dataMin, dataMax, plotY2, plotY1);
+      float x = map(hours[row], hourMin, hourMax, plotX1, plotX2);
+      float y = map(value, dataMin, dataMax, plotY2, plotY1*-300);
+      
+      println ("x:", x);
+      println("y:", y);
+      
       vertex(x, y);
     }
   }
